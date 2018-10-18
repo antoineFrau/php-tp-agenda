@@ -1,0 +1,177 @@
+<div class="container">
+  <div class="row float-right m-4">
+      <button type="button" id="create_user_btn" class="btn btn-success" data-toggle="modal" data-target="#userAddUpdate" data-action="add">+</button>
+  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">id</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Supprimer</th>
+        <th scope="col">Modifier</th>
+      </tr>
+    </thead>
+    <tbody id="users_list">
+      
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="userAddUpdate" tabindex="-1" role="dialog" aria-labelledby="userAddUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Nouvel utilisateur</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="user-id" class="col-form-label">Id:</label>
+            <input type="text" disabled class="form-control" id="user-id">
+          </div>
+          <div class="form-group">
+            <label for="user-name" class="col-form-label">Nom:</label>
+            <input type="text" class="form-control" id="user-name" autofocus>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          <button type="button" class="create_user_btn btn btn-info" data-dismiss="modal">Ajouter</button>
+          <button type="button" class="update_user_btn btn btn-info" data-dismiss="modal">Modifier</button></td>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var users = []
+
+  function get_users(){
+    $('#users_list').empty()
+    $.ajax({
+        type: "POST",
+        url: "controller/Controller.php",
+        data: {
+          "route": "users",
+        },
+        datatype: "text/html",
+        success: function (response) {
+          var dataJSON = JSON.parse(response);
+          users = dataJSON.data
+          for (var i = 0; i < Object.keys(users).length; i++) {
+            var element = users[i]
+            var row = '<tr id="row_'+element.id+'">'+
+              '<th scope="row">'+(i+1)+'</th>'+
+              '<td>'+element.id+'</td>'+
+              '<td>'+element.name+'</td>'+
+              '<td><button type="button" onclick="delete_user('+element.id+')" class="btn btn-danger">Supprimer</button></td>'+
+              '<td><button type="button" id="update_user_btn" class="btn btn-info" data-toggle="modal" data-id="'+element.id+'" data-name="'+element.name+'" data-target="#userAddUpdate" data-action="update" >Modifier</button></td>'+
+            '</tr>'
+            $('#users_list').append(row)
+          }
+        },
+        fail: function (response) {
+          console.log('request failed' + response);
+        }
+      });
+  }
+
+  function delete_user(id){
+    $.ajax({
+      type: "POST",
+      url: "controller/Controller.php",
+      data: {
+        "route": "delete_user",
+        "id_user": id
+      },
+      datatype: "text/html",
+      success: function (response) {
+        var dataJSON = JSON.parse(response);
+        console.log(dataJSON);
+      },
+      fail: function (response) {
+        console.log('request failed' + response);
+      }
+    });
+    $('#row_'+id).remove()
+  }
+
+  function update_user(id, name){
+    console.log(id + "" + name)
+    $.ajax({
+      type: "POST",
+      url: "controller/Controller.php",
+      data: {
+        "route": "update_user",
+        "id_user": id,
+        "name": name
+      },
+      datatype: "text/html",
+      success: function (response) {
+        var dataJSON = JSON.parse(response);
+        console.log(dataJSON);
+        get_users()
+      },
+      fail: function (response) {
+        console.log('request failed' + response);
+      }
+    });
+  }
+
+  function create_user(name){
+    $.ajax({
+        type: "POST",
+        url: "controller/Controller.php",
+        data: {
+          "route": "create_user",
+          "name": name
+        },
+        datatype: "text/html",
+        success: function (response) {
+          var dataJSON = JSON.parse(response);
+          get_users()
+        },
+        fail: function (response) {
+          console.log('request failed' + response);
+        }
+      });
+  }
+
+  $(document).ready(function () {
+    
+    get_users()
+    $('.create_user_btn').click(function() {
+      create_user($("#user-name").val())
+    })
+    
+    $('.update_user_btn').click(function() {
+      update_user($('#user-id').val(),$("#user-name").val())
+    })
+    
+    $('#userAddUpdate').on('show.bs.modal', function (event) {
+      var modal = $(this)
+      var button = $(event.relatedTarget)
+      var action = button.data('action')
+      $(".create_user_btn").show()
+      $(".update_user_btn").hide()
+      $("#user-id").parent().hide()
+      $("#user-name").val("")
+      $("#user-id").val("")
+      modal.find('.modal-title').text('Nouvel utilisateur')
+      if(action == "update"){
+        $(".create_user_btn").hide()
+        $("#user-id").parent().show()
+        $(".update_user_btn").show()
+        var id = button.data('id')
+        var name = button.data('name')
+        modal.find('.modal-title').text('Mise a jours de '+ name)
+        modal.find('#user-name').val(name)
+        modal.find('#user-id').val(id)
+      }
+    })
+
+  });
+</script>
