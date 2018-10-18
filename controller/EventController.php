@@ -8,19 +8,32 @@ class EventController{
     
     public function __construct() {        
     }
-    
-    public function login($userName,$password){
-        try {
-            $user = new UserModel;
-            $user->setUser($userName);
-            $user->setPassword($password);
-            $response = $user->login();
-            return json_encode($response);
-        } catch (Exception $exc) {
-            echo $exc->getTraceAsString();
-            return 0;
-        }
-            
+
+    public function create($title, $date_start, $date_end)
+    {
+        $event = new EventModel;
+        $event->setTitle($title);
+        $event->setDateStart($date_start);
+        $event->setDateEnd($date_end);
+        $response = $event->create();
+        echo json_encode($response);
+    }
+
+    public function update($date_start, $date_end, $id)
+    {
+        $event = new EventModel;
+        $event->setId($id);
+        $event->setDateStart($date_start);
+        $event->setDateEnd($date_end);
+        $response = $event->update();
+        echo json_encode($response);
+    }
+
+    public function get_events()
+    {
+        $event = new EventModel;
+        $response = $event->get_events();
+        echo json_encode($response);
     }
     
 }
