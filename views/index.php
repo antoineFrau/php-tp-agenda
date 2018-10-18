@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <?php    
-        require_once 'header.php'; 
+        require_once 'header.html'; 
         ?>
     </head>
     <body>
@@ -53,14 +53,14 @@
                             echo '<li class="breadcrumb-item active"><a href="?action=links">Links</a></li>';
                             break;
                         default:
-                            require_once 'home.php';
+                            require_once 'home.html';
                             break;
                     }
                 }
                 ?>
             </ol>
         </nav>
-        <div class="container text-center">
+        <div class="container">
             <?php 
             if (isset($_GET["action"])) {
                 switch ($_GET["action"]) {
@@ -71,20 +71,20 @@
                         require_once 'fullcalendar.html';
                         break;
                     case 'users':
-                        require_once 'users.php';
+                        require_once 'users.html';
                         break;
                     case 'links':
-                        require_once 'links.php';
+                        require_once 'links.html';
                         break;
                     default:
-                        require_once 'home.php';
+                        require_once 'home.html';
                         break;
                 }
             }
             ?>
         </div>
         <?php 
-            require_once 'footer.php';
+            require_once 'footer.html';
         ?>    
         
     </body>
