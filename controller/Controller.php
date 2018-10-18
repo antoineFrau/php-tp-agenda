@@ -6,6 +6,7 @@ ini_set('display_errors', 1	); // 0 No show errors, 1
 
 // User Controller
 require_once './UserController.php';
+require_once './EventController.php';
 require_once '../model/JsonResult.php';
 
 $route = filter_input(INPUT_POST, "route");
@@ -22,7 +23,7 @@ switch ($route){
                 echo json_encode(JsonResult::failledReturn("Missing parametters"));
                 return;
             }
-            $res = $user->create($name);
+            $user->create($name);
         break;
     case 'update_user';
             $user = new UserController();
@@ -32,12 +33,12 @@ switch ($route){
                 echo json_encode(JsonResult::failledReturn("Missing parametters"));
                 return;
             }
-            $res = $user->update($id, $name);
+            $user->update($id, $name);
         break;
     case 'delete_user';
             $user = new UserController();
             $id = filter_input(INPUT_POST, "id_user");
-            if ($id == null) {
+            if ($id == NULL) {
                 echo json_encode(JsonResult::failledReturn("Missing parametters"));
                 return;
             }
@@ -45,23 +46,34 @@ switch ($route){
         break;
     case 'users';
             $user = new UserController();
-            $res = $user->create(filter_input(INPUT_POST, "name"));
+            $user->get_users();
         break;
     /*                                  EVENT ROUTE                           */
     case 'events';
-            $user = new UserController();
-            $res = $user->login( filter_input(INPUT_POST, "user"), filter_input(INPUT_POST, "password") );
-            echo $res;
+            $event = new EventController();
+            $event->get_events();
         break;
     case 'create_event';
-            $user = new UserController();
-            $res = $user->login( filter_input(INPUT_POST, "user"), filter_input(INPUT_POST, "password") );
-            echo $res;
+            $event = new eventController();
+            $title = filter_input(INPUT_POST, "title");
+            $date_start = filter_input(INPUT_POST, "date_start");
+            $date_end = filter_input(INPUT_POST, "date_end");
+            if ($title == NULL || $date_start == NULL || $date_end == NULL) {
+                echo json_encode(JsonResult::failledReturn("Missing parametters"));
+                return;
+            }
+            $event->create($title, $date_start, $date_end);
         break;
-    case 'delete_event';
-            $user = new UserController();
-            $res = $user->login( filter_input(INPUT_POST, "user"), filter_input(INPUT_POST, "password") );
-            echo $res;
+    case 'update_event';
+            $event = new eventController();
+            $id = filter_input(INPUT_POST, "id_event");
+            $date_start = filter_input(INPUT_POST, "date_start");
+            $date_end = filter_input(INPUT_POST, "date_end");
+            if($id == NULL || $date_start == NULL || $date_end == NULL){
+                echo json_encode(JsonResult::failledReturn("Missing parametters"));
+                return;
+            }
+            $event->update($date_start, $date_end, $id);
         break;
     default:
         break;
