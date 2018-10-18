@@ -1,5 +1,6 @@
 <?php
 namespace agenda;
+use \PDO;
 
 require_once '../config/DBConnection.php';
 require_once 'User.php';
@@ -37,8 +38,7 @@ class UserModel extends User {
             $sql = "UPDATE " . $this->table . " SET name = ? WHERE id = ?";
             $record = $db->prepare($sql);
 
-            return $record->execute(array($this->getName(), $this->getId())) ? JsonResult::succeededReturn() :
-                JsonResult::failledReturn();
+            return $record->execute(array($this->getName(), $this->getId())) ? JsonResult::succeededReturn() : JsonResult::failledReturn();
         } catch (PDOException $exc) {
             return JsonResult::failledReturn($exc->getMessage());
         }   
@@ -50,39 +50,29 @@ class UserModel extends User {
         try {
             $sql = "DELETE FROM " . $this->table . " WHERE id = ?";
             $record = $db->prepare($sql);
-
             return $record->execute(array($this->getId())) ? JsonResult::succeededReturn() :
                 JsonResult::failledReturn();
         } catch (PDOException $exc) {
             return JsonResult::failledReturn($exc->getMessage());
         }   
-    }
+    } 
 
-    public function login(){
+    public function get_users(){
         $pdo = new DBConnection();
         $db = $pdo->DBConnect();
-        try{
-            $db->beginTransaction();
-            $sql = "SELECT * FROM  " . $this->table . " WHERE user =  ? AND password =  ?";
+        try {
+            $sql = "SELECT * FROM " . $this->table;
             $record = $db->prepare($sql);
-            
-            $record->execute( array( $this->getUser() , $this->getPassword() ) );
-            $userExist = $record->rowCount();
-            if ($userExist) {
+
+            $users = $record->execute();
+            if ($users) {
                 $dataList = $record->fetchAll(PDO::FETCH_ASSOC);
-                $db->commit();
-                $db = null;
-                return $dataList;
+                return JsonResult::succeededDataReturn($dataList);
             } else {
-                $db->commit();
-                $db = null;
-                return $userExist;
-            }            
-        }catch (PDOException $exc){
-            $db->rollback();
-            $db = null;
-            echo $exc->getMessage();
-            return null;
+                JsonResult::failledReturn();
+            }                            
+        } catch (PDOException $exc) {
+            return JsonResult::failledReturn($exc->getMessage());
         }   
-    }    
+    } 
 }
