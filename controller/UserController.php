@@ -30,6 +30,12 @@ class UserController{
         $response = $user->delete();
         echo json_encode($response);
     }
+
+    public function get_users(){
+        $user = new UserModel;
+        $response = $user->get_users();
+        echo json_encode($response);
+    }
     
 }
 
