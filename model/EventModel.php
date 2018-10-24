@@ -33,7 +33,7 @@ class EventModel extends Event {
         $pdo = new DBConnection();
         $db = $pdo->DBConnect();
         try {
-            $sql = "UPDATE " . $this->table . "SET date_start = ?, date_end = ?) where id=?";
+            $sql = "UPDATE " . $this->table . " SET date_start = ?, date_end = ? WHERE id = ?";
             $record = $db->prepare($sql);
 
             return $record->execute(array($this->getDateStart(), $this->getDateEnd(), $this->getId())) ? JsonResult::succeededReturn() : JsonResult::failledReturn();
@@ -46,7 +46,7 @@ class EventModel extends Event {
         $pdo = new DBConnection();
         $db = $pdo->DBConnect();
         try {
-            $sql = "SELECT * FROM " . $this->table; #." JOIN users ON events.organisateur = users.id";
+            $sql = "SELECT * FROM " . $this->table;
             $record = $db->prepare($sql);
 
             $events = $record->execute();
