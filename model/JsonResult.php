@@ -13,7 +13,7 @@ class JsonResult {
     public static function succeededDataReturn($data) {
         $json = new \stdClass;
         
-        $datas = (object) $data;
+        $datas = (object) array(array_values($data));
 
         $json->code = 200;
         $json->data = $datas;
