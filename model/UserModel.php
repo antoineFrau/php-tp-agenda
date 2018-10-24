@@ -37,7 +37,7 @@ class UserModel extends User {
         try {
             $sql = "UPDATE " . $this->table . " SET name = ? WHERE id = ?";
             $record = $db->prepare($sql);
-
+            
             return $record->execute(array($this->getName(), $this->getId())) ? JsonResult::succeededReturn() : JsonResult::failledReturn();
         } catch (PDOException $exc) {
             return JsonResult::failledReturn($exc->getMessage());
