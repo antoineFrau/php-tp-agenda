@@ -23,7 +23,6 @@
 					delete element['date_start']
 					delete element['date_end']
 					delete element['organisator']
-					console.log(JSON.stringify(element))
 					$('#calendar').fullCalendar('renderEvent', element, 'stick')
 				}
 			},
@@ -34,11 +33,6 @@
 	}
 
 	$(document).ready(function () {
-		var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();
-
 
 		$('.create_event_btn').click(function () {
 			var start = $('#event-date-start').val()
@@ -191,6 +185,7 @@
 				});
 			},
 			event: get_events(),
+			eventColor: '#e9ecef',
 		});
 	
 	});
@@ -236,7 +231,6 @@
 		</div>
 	</div>
 </div>
-
 
 <style>
 	#wrap {
