@@ -23,3 +23,6 @@ On peut aussi sélectionner plusieurs jours pour faire un évènement sur plusie
 ## Author
 Antoine Frau - Master 1 Développement Full-Stack.
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
