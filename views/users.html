@@ -60,7 +60,7 @@
         datatype: "text/html",
         success: function (response) {
           var dataJSON = JSON.parse(response);
-          users = dataJSON.data
+          users = dataJSON.data[0]
           for (var i = 0; i < Object.keys(users).length; i++) {
             var element = users[i]
             var row = '<tr id="row_'+element.id+'">'+
