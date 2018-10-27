@@ -1,6 +1,6 @@
 CREATE TABLE `events` (
 	`id` INT(50) NOT NULL AUTO_INCREMENT,
-	`title` varchar(50) NOT NULL,
+	`title` varchar(255) NOT NULL,
 	`date_start` DATE NOT NULL,
 	`date_end` DATE NOT NULL,
 	`organisator` INT,
