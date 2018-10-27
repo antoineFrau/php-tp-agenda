@@ -1,9 +1,39 @@
 <script>
+
+	function get_events() {
+		$.ajax({
+			type: "POST",
+			url: "controller/Controller.php",
+			data: {
+				"route": "events"
+			},
+			datatype: "text/html",
+			success: function (response) {
+				$('#calendar').fullCalendar('removeEvents');
+				var dataJSON = JSON.parse(response);
+				events = dataJSON.data[0]
+				for (var i = 0; i < Object.keys(events).length; i++) {
+					var element = events[i]
+					date_start_arr = element.date_start.split("-")
+					date_end_arr = element.date_end.split("-")
+					element['id'] = parseInt(element.id)
+					element['start'] = new Date(date_start_arr[0], date_start_arr[1] - 1, date_start_arr[2])
+					element['end'] = new Date(date_end_arr[0], date_end_arr[1] - 1, date_end_arr[2])
+					element['allDay'] = (element['end'].toString() == element['start'].toString()) ? true : false
+					delete element['date_start']
+					delete element['date_end']
+					delete element['organisator']
+					console.log(JSON.stringify(element))
+					$('#calendar').fullCalendar('renderEvent', element, 'stick')
+				}
+			},
+			fail: function (response) {
+				console.log('request failed' + response);
+			}
+		});
+	}
+	
 	$(document).ready(function () {
-		var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();
 
 		/*  className colors
 		
@@ -54,52 +84,8 @@
 			},
 			allDaySlot: false,
 			droppable: true, // this allows things to be dropped onto the calendar !!!
-			events: [
-				{
-					title: 'All Day Event',
-					start: new Date(y, m, 1)
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d - 3, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: new Date(y, m, d + 4, 16, 0),
-					allDay: false,
-					className: 'info'
-				},
-				{
-					title: 'Meeting',
-					start: new Date(y, m, d, 10, 30),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Lunch',
-					start: new Date(y, m, d, 12, 0),
-					end: new Date(y, m, d, 14, 0),
-					allDay: false,
-					className: 'important'
-				},
-				{
-					title: 'Birthday Party',
-					start: new Date(y, m, d + 1, 19, 0),
-					end: new Date(y, m, d + 1, 22, 30),
-					allDay: false,
-				},
-				{
-					title: 'Click for Google',
-					start: new Date(y, m, 28),
-					end: new Date(y, m, 29),
-					url: 'http://google.com/',
-					className: 'success'
-				}
-			],
+			event: get_events(),
+			eventColor: '#378006'
 		});
 	});
 </script>
