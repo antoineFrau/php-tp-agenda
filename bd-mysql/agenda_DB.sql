@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS agenda;
 CREATE TABLE `events` (
 	`id` INT(50) NOT NULL AUTO_INCREMENT,
 	`title` varchar(255) NOT NULL,
